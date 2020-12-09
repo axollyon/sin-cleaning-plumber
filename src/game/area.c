@@ -402,6 +402,9 @@ void render_game(void) {
                 gWarpTransDelay--;
             }
         }
+        // if (gPlayer1Controller->buttonDown & Z_TRIG) {
+        //     print_wr(10, 10, "testing 123");
+        // }
     } else {
         render_text_labels();
         if (D_8032CE78 != NULL) {

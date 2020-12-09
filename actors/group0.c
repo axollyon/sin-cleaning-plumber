@@ -5,6 +5,8 @@
 
 #include "make_const_nonconst.h"
 
+#include "src/sprites/font_wr.c"
+
 // Note: This bin does not use bin IDs, unlike the other segmented bins.
 #include "mario/model.inc.c"
 

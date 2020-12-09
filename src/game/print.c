@@ -1,10 +1,15 @@
 #include <ultra64.h>
+#include <PR/gs2dex.h>
 
 #include "config.h"
 #include "game_init.h"
 #include "memory.h"
 #include "print.h"
 #include "segment2.h"
+
+#include "src/sprites/font_wr.h"
+
+uObjMtx buf[100];
 
 /**
  * This file handles printing and formatting the colorful text that
@@ -458,4 +463,40 @@ void render_text_labels(void) {
     gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
 
     sTextLabelsCount = 0;
+}
+
+void setup_mtx(uObjMtx *buf, int x, int y, int scale) {
+	buf->m.A = scale;
+	buf->m.D = scale;
+
+	buf->m.X = x << 2;
+	buf->m.Y = y << 2;
+}
+
+void call_font_wr_sprite_dl(int idx, int x, int y, uObjMtx *buffer, int buf_idx) {
+	gDPPipeSync(gDisplayListHead++);
+	gSPDisplayList(gDisplayListHead++, s2d_init_dl);
+	gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+	gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
+	gSPObjRenderMode(gDisplayListHead++, G_OBJRM_XLU | G_OBJRM_BILERP);
+	gSPObjLoadTxtr(gDisplayListHead++, &font_wr_tex[idx]);
+	setup_mtx(&buffer[buf_idx], x, y, (1 << 16) / 4);
+	gSPObjMatrix(gDisplayListHead++, &buffer[buf_idx]);
+	gSPObjSprite(gDisplayListHead++, &font_wr_obj);
+}// 16 22
+
+void print_wr(s32 x, s32 y, const char *str) {
+    s32 i;
+    s32 length = strlength(str);
+    gSPLoadUcode(gDisplayListHead++, gspS2DEX2_fifoTextStart, gspS2DEX2_fifoDataStart);
+    for (i = 0; i < length; i++) {
+        call_font_wr_sprite_dl(str[i] - 0x20, x + (12 * i), y, &buf[i], i);
+    }
+    gSPLoadUcode(gDisplayListHead++, gspF3DZEX2_PosLight_fifoTextStart, gspF3DZEX2_PosLight_fifoDataStart);
+}
+
+s32 strlength(char *s) {
+  s32 y = 0;
+  do {y++;} while (*(++s) != '\0');
+  return y;
 }

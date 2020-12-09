@@ -37,21 +37,25 @@ $(eval $(call validate-option,VERSION,jp us eu sh))
 
 ifeq      ($(VERSION),jp)
   DEFINES   += VERSION_JP=1
+  DEFINES += S2DEX_GBI_2=1
   OPT_FLAGS := -g
   GRUCODE   ?= f3dzex
   VERSION_JP_US  ?= true
 else ifeq ($(VERSION),us)
   DEFINES   += VERSION_US=1
+  DEFINES += S2DEX_GBI_2=1
   OPT_FLAGS := -g
   GRUCODE   ?= f3dzex
   VERSION_JP_US  ?= true
 else ifeq ($(VERSION),eu)
   DEFINES   += VERSION_EU=1
+  DEFINES += S2DEX_GBI_2=1
   OPT_FLAGS := -O2
   GRUCODE   ?= f3dzex
   VERSION_JP_US  ?= false
 else ifeq ($(VERSION),sh)
   DEFINES   += VERSION_SH=1
+  DEFINES += S2DEX_GBI_2=1
   OPT_FLAGS := -O2
   GRUCODE   ?= f3dzex
   VERSION_JP_US  ?= false

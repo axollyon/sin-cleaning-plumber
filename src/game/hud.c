@@ -53,6 +53,11 @@ static struct PowerMeterHUD sPowerMeterHUD = {
 // when the power meter is hidden.
 s32 sPowerMeterVisibleTimer = 0;
 
+s32 sIntroTimer = 0;
+s32 sSavedTimer = 0;
+u8 sCurLine = 0;
+u8 sCurChar = 0;
+
 static struct UnusedHUDStruct sUnusedHUDValues = { 0x00, 0x0A, 0x00 };
 
 static struct CameraHUD sCameraHUD = { CAM_STATUS_NONE };
@@ -414,6 +419,140 @@ void render_hud_camera_status(void) {
     gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
 }
 
+#define INTRO_DELAY 40
+#define STRING_COUNT 48
+
+void render_intro_cutscene()
+{
+    if (sCurLine < STRING_COUNT - 1)
+    {
+        if (sCurLine < STRING_COUNT - 2)
+        {
+            char *strs[] = 
+            { 
+                "Site-64 SCiPNet Messaging", // This line is the maximum number of characters
+                "        ",
+                "Access to this terminal",
+                "is restricted to",
+                "personnel with at least",
+                "level 2 clearance.",
+                "        ",
+                "        ",
+                "       -BEGIN LOG-       ",
+                "        ",
+                "Dr. Koup:                ",
+                "Got another assignment",
+                "for you, a cross-test. ",
+                "New anomaly got shipped, ",
+                "a humanoid male. 155cm, ",
+                "56kg, seemingly mid-",
+                "twenties. Claims to be",
+                "\"Mario\" - yes, the",
+                "Nintendo character, and",
+                "looks the part, too.     ",
+                "The anomalous property is",
+                "whenever it's killed, it",
+                "\"respawns\" in a previous",
+                "location. Thought we'd",
+                "use that to get some more",
+                "exploration out of 093.",
+                "        ",
+                "Researcher Lakitt:       ",
+                "Sounds pretty cheesy, but",
+                "I'll take it. Better than",
+                "proofreading others'",
+                "articles all day.",
+                "                         ",
+                "        -END LOG-        ",
+                "                         ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " "
+            };
+            u8 i = 0;
+
+            sIntroTimer++;
+            sSavedTimer = sIntroTimer;
+
+            // Black Screen
+            create_dl_translation_matrix(MENU_MTX_PUSH, 0, 240.0f, 0);
+            create_dl_scale_matrix(MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
+            gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
+            gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+            gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+            if (sIntroTimer >= INTRO_DELAY)
+            {
+                for (i = 0; i < STRING_COUNT; i++)
+                {
+                    if (i < sCurLine)
+                    {
+                        if (sCurLine - i < 14)
+                        {
+                            u8 buf = sCurLine < 13 ? i : 13 - (sCurLine - i);
+                            print_wr(10, 8 + (buf * 16), buf, 64, strs[i]);
+                        }
+                    }
+                    else if (i == sCurLine)
+                    {
+                        u8 buf = i < 13 ? i : 13;
+                        print_wr(10, 8 + (buf * 16), buf, sCurChar + 1, strs[i]);
+                        if (sIntroTimer % 2 == 0 || gPlayer1Controller->buttonDown & A_BUTTON || gPlayer1Controller->buttonDown & B_BUTTON)
+                        {
+                            sCurChar++;
+                            if (sCurChar > strlength(strs[i]))
+                            {
+                                sCurChar = 0;
+                                sCurLine++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (gPlayer1Controller->buttonPressed & START_BUTTON)
+            {
+                sCurLine = STRING_COUNT - 2;
+            }
+        }
+        else
+        {
+            s16 alpha = 255 - ((sIntroTimer - sSavedTimer) * 4);
+            sIntroTimer++;
+            if (alpha > 0)
+            {
+                // Black Screen
+                create_dl_translation_matrix(MENU_MTX_PUSH, 0, 240.0f, 0);
+                create_dl_scale_matrix(MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
+                gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, alpha);
+                gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+                gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+            }
+            else 
+            {
+                sCurLine = STRING_COUNT - 1;
+            }
+        }
+    }
+    else
+    {
+        set_mario_action(gMarioState, ACT_IDLE, 0);
+        gIntroCutscene = FALSE;
+        sIntroTimer = 0;
+        sCurLine = 0;
+    }
+}
+
 /**
  * Render HUD strings using hudDisplayFlags with it's render functions,
  * excluding the cannon reticle which detects a camera preset for it.
@@ -447,33 +586,40 @@ void render_hud(void) {
         create_dl_ortho_matrix();
 #endif
 
-        if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
-            render_hud_cannon_reticle();
+        if (gIntroCutscene)
+        {
+            render_intro_cutscene();
         }
+        else
+        {
+            if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
+                render_hud_cannon_reticle();
+            }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
-            render_hud_mario_lives();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
+                render_hud_mario_lives();
+            }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
-            render_hud_coins();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
+                render_hud_coins();
+            }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
-            render_hud_stars();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
+                render_hud_stars();
+            }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
-            render_hud_keys();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
+                render_hud_keys();
+            }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
-            render_hud_power_meter();
-            render_hud_camera_status();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
+                render_hud_power_meter();
+                render_hud_camera_status();
+            }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
-            render_hud_timer();
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
+                render_hud_timer();
+            }
         }
     }
 }

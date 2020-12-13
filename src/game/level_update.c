@@ -178,6 +178,7 @@ s16 unusedEULevelUpdateBss1;
 #endif
 s8 sTimerRunning;
 s8 gNeverEnteredCastle;
+s8 gIntroCutscene;
 
 struct MarioState *gMarioState = &gMarioStates[0];
 u8 unused1[4] = { 0 };
@@ -1200,8 +1201,8 @@ s32 init_level(void) {
                     if (save_file_exists(gCurrSaveFileNum - 1)) {
                         set_mario_action(gMarioState, ACT_IDLE, 0);
                     } else {
-                        set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
-                        val4 = 1;
+                        set_mario_action(gMarioState, ACT_WAITING_FOR_DIALOG, 0);
+                        gIntroCutscene = TRUE;
                     }
                 }
             }

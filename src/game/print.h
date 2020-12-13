@@ -29,6 +29,7 @@ void print_text_fmt_int(s32 x, s32 y, const char *str, s32 n);
 void print_text(s32 x, s32 y, const char *str);
 void print_text_centered(s32 x, s32 y, const char *str);
 void render_text_labels(void);
-void print_wr(s32 x, s32 y, const char *str);
+void print_wr(s32 x, s32 y, s32 bufIndex, s32 limit, const char *str);
+s32 strlength(char *s);
 
 #endif // PRINT_H

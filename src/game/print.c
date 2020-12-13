@@ -9,7 +9,7 @@
 
 #include "src/sprites/font_wr.h"
 
-uObjMtx buf[100];
+uObjMtx buf[16][64];
 
 /**
  * This file handles printing and formatting the colorful text that
@@ -485,12 +485,12 @@ void call_font_wr_sprite_dl(int idx, int x, int y, uObjMtx *buffer, int buf_idx)
 	gSPObjSprite(gDisplayListHead++, &font_wr_obj);
 }// 16 22
 
-void print_wr(s32 x, s32 y, const char *str) {
+void print_wr(s32 x, s32 y, s32 bufIndex, s32 limit, const char *str) {
     s32 i;
     s32 length = strlength(str);
     gSPLoadUcode(gDisplayListHead++, gspS2DEX2_fifoTextStart, gspS2DEX2_fifoDataStart);
-    for (i = 0; i < length; i++) {
-        call_font_wr_sprite_dl(str[i] - 0x20, x + (12 * i), y, &buf[i], i);
+    for (i = 0; i < length && i < limit; i++) {
+        call_font_wr_sprite_dl(str[i] - 0x20, x + (12 * i), y, &buf[bufIndex][i], i);
     }
     gSPLoadUcode(gDisplayListHead++, gspF3DZEX2_PosLight_fifoTextStart, gspF3DZEX2_PosLight_fifoDataStart);
 }

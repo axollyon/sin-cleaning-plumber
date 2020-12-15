@@ -7,6 +7,7 @@
 #include "game/object_list_processor.h"
 #include "surface_collision.h"
 #include "surface_load.h"
+#include "behavior_data.h"
 
 /**************************************************
  *                      WALLS                     *
@@ -130,6 +131,27 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
                 // If Mario has a vanish cap, pass through the vanish cap wall.
                 if (gCurrentObject != NULL && gCurrentObject == gMarioObject
                     && (gMarioState->flags & MARIO_VANISH_CAP)) {
+                    continue;
+                }
+            }
+
+            // If an object can pass through a mirror, pass through.
+            if (surf->type == SURFACE_MIRROR_WALLS) {
+                // If an object can pass through a mirror, pass through.
+                if (gCurrentObject != NULL
+                    && (gCurrentObject->activeFlags & ACTIVE_FLAG_MOVE_THROUGH_GRATE)) {
+                    continue;
+                }
+
+                // If Mario is holding SCP-093, pass through the mirror.
+                if 
+                (
+                    gCurrentObject != NULL && 
+                    gCurrentObject == gMarioObject && 
+                    gMarioState->heldObj != NULL &&
+                    gMarioState->heldObj->behavior == segmented_to_virtual(bhvZeroNineThree)
+                ) 
+                {
                     continue;
                 }
             }

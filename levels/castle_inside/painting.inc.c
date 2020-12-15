@@ -8,14 +8,14 @@ static const Lights1 inside_castle_seg7_lights_07021800 = gdSPDefLights1(
 
 // 0x07021818 - 0x07021898
 static const Vtx inside_castle_seg7_vertex_07021818[] = {
-    {{{     0,      0,      0}, 0, {   -32,    992}, {0x00, 0x00, 0x7f, 0xff}}},
-    {{{   614,      0,      0}, 0, {  2012,    992}, {0x00, 0x00, 0x7f, 0xff}}},
-    {{{   614,    307,      0}, 0, {  2012,      0}, {0x00, 0x00, 0x7f, 0xff}}},
-    {{{     0,    307,      0}, 0, {   -32,      0}, {0x00, 0x00, 0x7f, 0xff}}},
-    {{{     0,    307,      0}, 0, {   -32,    992}, {0x00, 0x00, 0x7f, 0xff}}},
-    {{{   614,    307,      0}, 0, {  2012,    992}, {0x00, 0x00, 0x7f, 0xff}}},
-    {{{   614,    614,      0}, 0, {  2012,    -28}, {0x00, 0x00, 0x7f, 0xff}}},
-    {{{     0,    614,      0}, 0, {   -32,    -28}, {0x00, 0x00, 0x7f, 0xff}}},
+    {{{     0,      0,      0}, 0, {   -32,    992}, {0x00, 0x00, 0x7f, 0xB4}}},
+    {{{   614,      0,      0}, 0, {  2012,    992}, {0x00, 0x00, 0x7f, 0xB4}}},
+    {{{   614,    307,      0}, 0, {  2012,      0}, {0x00, 0x00, 0x7f, 0xB4}}},
+    {{{     0,    307,      0}, 0, {   -32,      0}, {0x00, 0x00, 0x7f, 0xB4}}},
+    {{{     0,    307,      0}, 0, {   -32,    992}, {0x00, 0x00, 0x7f, 0xB4}}},
+    {{{   614,    307,      0}, 0, {  2012,    992}, {0x00, 0x00, 0x7f, 0xB4}}},
+    {{{   614,    614,      0}, 0, {  2012,    -28}, {0x00, 0x00, 0x7f, 0xB4}}},
+    {{{     0,    614,      0}, 0, {   -32,    -28}, {0x00, 0x00, 0x7f, 0xB4}}},
 };
 
 // 0x07021898 - 0x07021918
@@ -1070,11 +1070,11 @@ UNUSED static const u64 castle_inside_unused_1 = 0x0;
 static const Gfx inside_castle_seg7_painting_dl_07023050[] = {
     gsSPDisplayList(inside_castle_seg7_dl_07021A48),
     gsSPVertex(inside_castle_seg7_vertex_07021818, 8, 0),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, inside_castle_seg7_texture_0700B800),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, inside_castle_seg7_texture_0700B800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(inside_castle_seg7_dl_07021A18),
-    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, inside_castle_seg7_texture_0700A800),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 64, inside_castle_seg7_texture_0700A800),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),
     gsSPDisplayList(inside_castle_seg7_dl_07021A30),
@@ -1359,10 +1359,10 @@ struct Painting bob_painting = {
     /* Texture Type */ PAINTING_IMAGE,
     /* Floor Status */ 0x00, 0x00, 0x00 /* which of the painting's nearby special floors Mario's on */,
     /* Ripple Status */ 0x00,
-    /* Rotation */     0.0f,    90.0f,
-    /* Position */ -5222.4f,   409.6f,   -153.6f,
+    /* Rotation */     0.0f,    180.0f,
+    /* Position */ 200.0f,   0.0f,   0.0f,
     /*                         curr   passive     entry */
-    /* Ripple Magnitude */     0.0f,    20.0f,    80.0f,
+    /* Ripple Magnitude */     0.0f,    10.0f,    25.0f,
     /* Ripple Decay */         1.0f,  0.9608f,  0.9524f,
     /* Ripple Rate */          0.0f,    0.24f,    0.14f,
     /* Ripple Dispersion */    0.0f,    40.0f,    30.0f,
@@ -1374,9 +1374,9 @@ struct Painting bob_painting = {
     /* Texture w, h */ 64, 32,
     /* Ripple DList */ inside_castle_seg7_painting_dl_07021AC0,
     /* Ripple Trigger */ RIPPLE_TRIGGER_PROXIMITY,
-    /* Alpha */ 0xFF,
+    /* Alpha */ 0xB4,
     /* Mario Below */  0x00, 0x00, 0x00, /* Whether or not Mario is below the painting */
-    /* Size */  614.0f,
+    /* Size */  400.0f,
 };
 
 // 0x07023698 - 0x07023710

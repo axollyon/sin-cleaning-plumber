@@ -1761,10 +1761,10 @@ const GeoLayout mario_geo_load_body[] = {
 const GeoLayout mario_geo_load_medium_poly_body[] = {
    GEO_SWITCH_CASE(0, geo_switch_mario_cap_effect),
    GEO_OPEN_NODE(),
-      GEO_BRANCH(1, mario_geo_medium_poly_body),
-      GEO_BRANCH(1, mario_vanish_geo_medium_poly_body),
-      GEO_BRANCH(1, mario_metal_geo_medium_poly_body),
-      GEO_BRANCH(1, mario_metal_vanish_geo_medium_poly_body),
+      GEO_BRANCH(1, mario_geo_body),
+      GEO_BRANCH(1, mario_vanish_geo_body),
+      GEO_BRANCH(1, mario_metal_geo_body),
+      GEO_BRANCH(1, mario_metal_vanish_geo_body),
    GEO_CLOSE_NODE(),
    GEO_RETURN(),
 };
@@ -1775,10 +1775,10 @@ const GeoLayout mario_geo_load_medium_poly_body[] = {
 const GeoLayout mario_geo_load_low_poly_body[] = {
    GEO_SWITCH_CASE(0, geo_switch_mario_cap_effect),
    GEO_OPEN_NODE(),
-      GEO_BRANCH(1, mario_geo_low_poly_body),
-      GEO_BRANCH(1, mario_vanish_geo_low_poly_body),
-      GEO_BRANCH(1, mario_metal_geo_low_poly_body),
-      GEO_BRANCH(1, mario_metal_vanish_geo_low_poly_body),
+      GEO_BRANCH(1, mario_geo_body),
+      GEO_BRANCH(1, mario_vanish_geo_body),
+      GEO_BRANCH(1, mario_metal_geo_body),
+      GEO_BRANCH(1, mario_metal_vanish_geo_body),
    GEO_CLOSE_NODE(),
    GEO_RETURN(),
 };

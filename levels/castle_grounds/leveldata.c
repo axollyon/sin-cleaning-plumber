@@ -10,6 +10,8 @@
 
 #include "make_const_nonconst.h"
 #include "levels/castle_grounds/texture.inc.c"
+#include "levels/castle_inside/texture.inc.c"
+#include "levels/castle_inside/painting.inc.c"
 #include "levels/castle_grounds/areas/1/1/model.inc.c"
 #include "levels/castle_grounds/areas/1/2/model.inc.c"
 #include "levels/castle_grounds/areas/1/3/model.inc.c"

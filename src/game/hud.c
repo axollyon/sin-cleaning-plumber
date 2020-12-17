@@ -500,13 +500,13 @@ void render_intro_cutscene()
                         if (sCurLine - i < 14)
                         {
                             u8 buf = sCurLine < 13 ? i : 13 - (sCurLine - i);
-                            print_wr(10, 8 + (buf * 16), buf, 64, strs[i]);
+                            print_wr(10, 8 + (buf * 16), buf, 64, strs[i], 0.25f);
                         }
                     }
                     else if (i == sCurLine)
                     {
                         u8 buf = i < 13 ? i : 13;
-                        print_wr(10, 8 + (buf * 16), buf, sCurChar + 1, strs[i]);
+                        print_wr(10, 8 + (buf * 16), buf, sCurChar + 1, strs[i], 0.25f);
                         if (sIntroTimer % 2 == 0 || gPlayer1Controller->buttonDown & A_BUTTON || gPlayer1Controller->buttonDown & B_BUTTON)
                         {
                             sCurChar++;

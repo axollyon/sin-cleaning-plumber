@@ -12,6 +12,7 @@
 #include "game/memory.h"
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
+#include "game/print.h"
 #include "game/save_file.h"
 #include "game/segment2.h"
 #include "game/segment7.h"
@@ -20,6 +21,9 @@
 #include "star_select.h"
 #include "text_strings.h"
 #include "prevent_bss_reordering.h"
+
+#include "src/sprites/font_wr.h"
+#include "sprites/img_scp.h"
 
 /**
  * @file star_select.c
@@ -52,6 +56,12 @@ static s8 sSelectableStarIndex = 0;
 
 // Act Selector menu timer that keeps counting until you choose an act.
 static s32 sActSelectorMenuTimer = 0;
+
+uObjMtx scpBuf[32];
+
+s16 tintR = 0;
+s16 tintG = 0;
+s16 tintB = 0;
 
 /**
  * Act Selector Star Type Loop Action
@@ -109,6 +119,10 @@ void bhv_act_selector_init(void) {
     s16 i = 0;
     s32 selectorModelIDs[10];
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+
+    tintR = 0;
+    tintG = 0;
+    tintB = 0;
 
     sVisibleStars = 0;
     while (i != sObtainedStars) {
@@ -201,166 +215,70 @@ void bhv_act_selector_loop(void) {
     }
 }
 
-/**
- * Print the course number selected with the wood rgba16 course texture.
- */
-#ifdef VERSION_EU
-void print_course_number(s16 language) {
-#else
-void print_course_number(void) {
-#endif
-    u8 courseNum[4];
-
-    create_dl_translation_matrix(MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
-
-    // Full wood texture in JP & US, lower part of it on EU
-    gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course);
-
-#ifdef VERSION_EU
-    // Change upper part of the wood texture depending of the language defined
-    switch (language) {
-        case LANGUAGE_ENGLISH:
-            gSPDisplayList(gDisplayListHead++, dl_menu_texture_course_upper);
-            break;
-        case LANGUAGE_FRENCH:
-            gSPDisplayList(gDisplayListHead++, dl_menu_texture_niveau_upper);
-            break;
-        case LANGUAGE_GERMAN:
-            gSPDisplayList(gDisplayListHead++, dl_menu_texture_kurs_upper);
-            break;
-    }
-
-    gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course_end);
-#endif
-
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
-
-    int_to_str(gCurrCourseNum, courseNum);
-
-    if (gCurrCourseNum < 10) { // 1 digit number
-        print_hud_lut_string(HUD_LUT_GLOBAL, 152, 158, courseNum);
-    } else { // 2 digit number
-        print_hud_lut_string(HUD_LUT_GLOBAL, 143, 158, courseNum);
-    }
-
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
-}
-
-#ifdef VERSION_JP
-#define ACT_NAME_X 158
-#else
-#define ACT_NAME_X 163
-#endif
+#define FADE_SPEED 12
 
 /**
  * Print act selector strings, some with special checks.
  */
 void print_act_selector_strings(void) {
-#ifdef VERSION_EU
-    unsigned char myScore[][10] = { {TEXT_MYSCORE}, {TEXT_MY_SCORE_FR}, {TEXT_MY_SCORE_DE} };
-#else
-    unsigned char myScore[] = { TEXT_MYSCORE };
-#endif
-    unsigned char starNumbers[] = { TEXT_ZERO };
-
-#ifdef VERSION_EU
-    u8 **levelNameTbl;
-    u8 *currLevelName;
-    u8 **actNameTbl;
-#else
-    u8 **levelNameTbl = segmented_to_virtual(seg2_course_name_table);
-    u8 *currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
-    u8 **actNameTbl = segmented_to_virtual(seg2_act_name_table);
-#endif
-    u8 *selectedActName;
-#ifndef VERSION_EU
-    s16 lvlNameX;
-    s16 actNameX;
-#endif
-    s8 i;
-#ifdef VERSION_EU
-    s16 language = eu_get_language();
-#endif
+    char *levelName;
+    char *actName;
 
     create_dl_ortho_matrix();
 
-#ifdef VERSION_EU
-    switch (language) {
-        case LANGUAGE_ENGLISH:
-            actNameTbl = segmented_to_virtual(act_name_table_eu_en);
-            levelNameTbl = segmented_to_virtual(course_name_table_eu_en);
+    switch (gCurrCourseNum)
+    {
+        case 1: 
+            levelName = "Land of the Unclean";
+            switch (sSelectedActIndex)
+            {
+                case 0:
+                    actName = "Blue Test";
+                    fade_tint(0, 0, 255, FADE_SPEED);
+                    break;
+                case 1:
+                    actName = "Green Test";
+                    fade_tint(0, 255, 0, FADE_SPEED);
+                    break;
+                case 2:
+                    actName = "Violet Test";
+                    fade_tint(128, 0, 255, FADE_SPEED);
+                    break;
+                case 3:
+                    actName = "Yellow Test";
+                    fade_tint(255, 255, 0, FADE_SPEED);
+                    break;
+                case 4:
+                    actName = "Red Test";
+                    fade_tint(255, 0, 0, FADE_SPEED);
+                    break;
+                case 5:
+                    actName = "----- Test";
+                    break;
+                default:
+                    actName = "Missing Name";
+                    break;
+            }
+            create_dl_translation_matrix(MENU_MTX_PUSH, 0, 240.0f, 0);
+            create_dl_scale_matrix(MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
+            gDPSetEnvColor(gDisplayListHead++, (u8)tintR, (u8)tintG, (u8)tintB, 128);
+            gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+            gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
             break;
-        case LANGUAGE_FRENCH:
-            actNameTbl = segmented_to_virtual(act_name_table_eu_fr);
-            levelNameTbl = segmented_to_virtual(course_name_table_eu_fr);
-            break;
-        case LANGUAGE_GERMAN:
-            actNameTbl = segmented_to_virtual(act_name_table_eu_de);
-            levelNameTbl = segmented_to_virtual(course_name_table_eu_de);
+        default:
+            levelName = "Missing Name";
+            actName = "Missing Name";
             break;
     }
-    currLevelName = segmented_to_virtual(levelNameTbl[gCurrCourseNum - 1]);
-#endif
+    print_wr(160 - (strlength(levelName) * 4), 194, 0, 64, levelName, (1.0f / 6.0f));
 
-    // Print the coin highscore.
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
-    print_hud_my_score_coins(1, gCurrSaveFileNum - 1, gCurrCourseNum - 1, 155, 106);
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
+    draw_scp(128, 128);
 
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
-    // Print the "MY SCORE" text if the coin score is more than 0
-    if (save_file_get_course_coin_score(gCurrSaveFileNum - 1, gCurrCourseNum - 1) != 0) {
-#ifdef VERSION_EU
-        print_generic_string(95, 118, myScore[language]);
-#else
-        print_generic_string(102, 118, myScore);
-#endif
-    }
-
-#ifdef VERSION_EU
-    print_generic_string(get_str_x_pos_from_center(160, currLevelName + 3, 10.0f), 33, currLevelName + 3);
-#else
-    lvlNameX = get_str_x_pos_from_center(160, currLevelName + 3, 10.0f);
-    print_generic_string(lvlNameX, 33, currLevelName + 3);
-#endif
-
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
-
-#ifdef VERSION_EU
-    print_course_number(language);
-#else
-    print_course_number();
-#endif
-
-    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
     // Print the name of the selected act.
-    if (sVisibleStars != 0) {
-        selectedActName = segmented_to_virtual(actNameTbl[(gCurrCourseNum - 1) * 6 + sSelectedActIndex]);
-
-#ifdef VERSION_EU
-        print_menu_generic_string(get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f), 81, selectedActName);
-#else
-        actNameX = get_str_x_pos_from_center(ACT_NAME_X, selectedActName, 8.0f);
-        print_menu_generic_string(actNameX, 81, selectedActName);
-#endif
+    if (sVisibleStars != 0) 
+    {
+        print_wr(160 - (strlength(actName) * 4), 84, 1, 64, actName, (1.0f / 6.0f));
     }
-
-    // Print the numbers above each star.
-    for (i = 1; i <= sVisibleStars; i++) {
-        starNumbers[0] = i;
-#ifdef VERSION_EU
-        print_menu_generic_string(143 - sVisibleStars * 15 + i * 30, 38, starNumbers);
-#else
-        print_menu_generic_string(139 - sVisibleStars * 17 + i * 34, 38, starNumbers);
-#endif
-    }
-
-    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
  }
 
 /**
@@ -437,4 +355,108 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
     area_update_objects();
     sActSelectorMenuTimer++;
     return sLoadedActNum;
+}
+
+void call_img_scp_sprite_dl(int idx, int x, int y, uObjMtx *buffer, int buf_idx) {
+	gDPPipeSync(gDisplayListHead++);
+	gSPDisplayList(gDisplayListHead++, s2d_init_dl);
+	gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+	gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
+	gSPObjRenderMode(gDisplayListHead++, G_OBJRM_XLU | G_OBJRM_BILERP);
+	gSPObjLoadTxtr(gDisplayListHead++, &img_scp_tex[idx]);
+	setup_mtx(&buffer[buf_idx], x, y, (1 << 16) / 4);
+	gSPObjMatrix(gDisplayListHead++, &buffer[buf_idx]);
+	gSPObjSprite(gDisplayListHead++, &img_scp_obj);
+}// 64 64
+
+void draw_scp(s32 x, s32 y) {
+    s32 i;
+    s32 j;
+    gSPLoadUcode(gDisplayListHead++, gspS2DEX2_fifoTextStart, gspS2DEX2_fifoDataStart);
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            s32 index = j + (4 * i);
+            call_img_scp_sprite_dl(index, x + (16 * j), y + (16 * i), &scpBuf[index], index);
+        }
+    }
+    gSPLoadUcode(gDisplayListHead++, gspF3DZEX2_PosLight_fifoTextStart, gspF3DZEX2_PosLight_fifoDataStart);
+}
+
+void fade_tint(u8 r, u8 g, u8 b, u8 speed) {
+    if (tintR == 0 && tintG == 0 && tintB == 0)
+    {
+        tintR = r;
+        tintG = g;
+        tintB = b;
+    }
+    else 
+    {
+        u8 halfSpeed = speed / 2;
+
+        if (tintR < r - halfSpeed)
+        {
+            tintR += speed;
+        }
+        else if (tintR > r + halfSpeed)
+        {
+            tintR -= speed;
+        }
+        else if (tintR != r)
+        {
+            tintR = r;
+        }
+
+        if (tintG < g - halfSpeed)
+        {
+            tintG += speed;
+        }
+        else if (tintG > g + halfSpeed)
+        {
+            tintG -= speed;
+        }
+        else if (tintG != g)
+        {
+            tintG = g;
+        }
+
+        if (tintB < b - halfSpeed)
+        {
+            tintB += speed;
+        }
+        else if (tintB > b + halfSpeed)
+        {
+            tintB -= speed;
+        }
+        else if (tintB != b)
+        {
+            tintB = b;
+        }
+
+        if (tintR > 255)
+        {
+            tintR = 255;
+        }
+        if (tintG > 255)
+        {
+            tintG = 255;
+        }
+        if (tintB > 255)
+        {
+            tintB = 255;
+        }
+
+        if (tintR < 0)
+        {
+            tintR = 0;
+        }
+        if (tintG < 0)
+        {
+            tintG = 0;
+        }
+        if (tintB < 0)
+        {
+            tintB = 0;
+        }
+
+    }
 }

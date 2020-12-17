@@ -473,24 +473,25 @@ void setup_mtx(uObjMtx *buf, int x, int y, int scale) {
 	buf->m.Y = y << 2;
 }
 
-void call_font_wr_sprite_dl(int idx, int x, int y, uObjMtx *buffer, int buf_idx) {
+void call_font_wr_sprite_dl(int idx, int x, int y, uObjMtx *buffer, int buf_idx, f32 scale) {
+    s32 intScale = (s32)(65536.0f * scale);
 	gDPPipeSync(gDisplayListHead++);
 	gSPDisplayList(gDisplayListHead++, s2d_init_dl);
 	gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
 	gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
 	gSPObjRenderMode(gDisplayListHead++, G_OBJRM_XLU | G_OBJRM_BILERP);
 	gSPObjLoadTxtr(gDisplayListHead++, &font_wr_tex[idx]);
-	setup_mtx(&buffer[buf_idx], x, y, (1 << 16) / 4);
+	setup_mtx(&buffer[buf_idx], x, y, intScale);
 	gSPObjMatrix(gDisplayListHead++, &buffer[buf_idx]);
 	gSPObjSprite(gDisplayListHead++, &font_wr_obj);
 }// 16 22
 
-void print_wr(s32 x, s32 y, s32 bufIndex, s32 limit, const char *str) {
+void print_wr(s32 x, s32 y, s32 bufIndex, s32 limit, const char *str, f32 scale) {
     s32 i;
     s32 length = strlength(str);
     gSPLoadUcode(gDisplayListHead++, gspS2DEX2_fifoTextStart, gspS2DEX2_fifoDataStart);
     for (i = 0; i < length && i < limit; i++) {
-        call_font_wr_sprite_dl(str[i] - 0x20, x + (12 * i), y, &buf[bufIndex][i], i);
+        call_font_wr_sprite_dl(str[i] - 0x20, x + (48 * scale * i), y, &buf[bufIndex][i], i, scale);
     }
     gSPLoadUcode(gDisplayListHead++, gspF3DZEX2_PosLight_fifoTextStart, gspF3DZEX2_PosLight_fifoDataStart);
 }

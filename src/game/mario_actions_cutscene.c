@@ -230,19 +230,19 @@ static void stub_is_textbox_active(u16 *a0) {
  * numStars has reached a milestone and prevNumStarsForDialog has not reached it.
  */
 s32 get_star_collection_dialog(struct MarioState *m) {
-    s32 i;
+    // s32 i;
     s32 dialogID = 0;
-    s32 numStarsRequired;
+    // s32 numStarsRequired;
 
-    for (i = 0; i < ARRAY_COUNT(sStarsNeededForDialog); i++) {
-        numStarsRequired = sStarsNeededForDialog[i];
-        if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
-            dialogID = i + DIALOG_141;
-            break;
-        }
-    }
+    // for (i = 0; i < ARRAY_COUNT(sStarsNeededForDialog); i++) {
+    //     numStarsRequired = sStarsNeededForDialog[i];
+    //     if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
+    //         dialogID = i + DIALOG_141;
+    //         break;
+    //     }
+    // }
 
-    m->prevNumStarsForDialog = m->numStars;
+    // m->prevNumStarsForDialog = m->numStars;
     return dialogID;
 }
 
@@ -1050,6 +1050,13 @@ s32 act_spawn_spin_landing(struct MarioState *m) {
  * particle flag that generates sparkles.
  */
 s32 act_exit_airborne(struct MarioState *m) {
+    if (m->actionTimer < 18 && m->healCounter != 31) {
+        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_NONE];
+    }
+    else {
+        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
+    }
+
     if (15 < m->actionTimer++
         && launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_GENERAL_FALL, -32.0f)) {
         // heal Mario

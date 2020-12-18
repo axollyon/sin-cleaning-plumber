@@ -13,6 +13,7 @@
 #include "area.h"
 #include "save_file.h"
 #include "print.h"
+#include "engine/surface_load.h"
 
 /* @file hud.c
  * This file implements HUD rendering and power meter animations.
@@ -543,6 +544,15 @@ void render_intro_cutscene()
                 sCurLine = STRING_COUNT - 1;
             }
         }
+
+        if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_SURFACES)
+        {
+            print_text(10, 40, "SURFACE POOL FULL");
+        }
+        if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_NODES)
+        {
+            print_text(10, 60, "SURFACE NODE POOL FULL");
+        }
     }
     else
     {
@@ -619,6 +629,15 @@ void render_hud(void) {
 
             if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
                 render_hud_timer();
+            }
+
+            if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_SURFACES)
+            {
+                print_text(10, 40, "SURFACE POOL FULL");
+            }
+            if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_NODES)
+            {
+                print_text(10, 60, "SURFACE NODE POOL FULL");
             }
         }
     }

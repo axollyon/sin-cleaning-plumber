@@ -125,5 +125,8 @@
     },
     "23_custom_static": [
         "streamed_audio"
+    ],
+    "24_custom_welcoming": [
+        "streamed_audio"
     ]
 }

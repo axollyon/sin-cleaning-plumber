@@ -53,7 +53,7 @@ const LevelScript level_castle_grounds_entry[] = {
 		OBJECT(MODEL_ZERONINETHREE, 0, 182, 0, 0, 0, 0, 0x00000000, bhvZeroNineThree),
 		OBJECT(MODEL_NONE, 0, 180, -800, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
 		MARIO_POS(0x01, 0, 0, 100, -800),
-		OBJECT(MODEL_NONE, 0, 300, 980, 0, 0, 0, 0x000B0000, bhvPaintingStarCollectWarp),
+		OBJECT(MODEL_NONE, 0, 300, 1000, 0, 0, 0, 0x000B0000, bhvPaintingStarCollectWarp),
 		TERRAIN(castle_grounds_area_1_collision),
 		MACRO_OBJECTS(castle_grounds_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, SEQ_STREAMED_STATIC),

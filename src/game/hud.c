@@ -606,6 +606,29 @@ void render_hud(void) {
                 render_hud_cannon_reticle();
             }
 
+            if (gCurrCourseNum == 1)
+            {
+                if (gCurrActNum < 5)
+                {
+                    u8 tintR = 0;
+                    u8 tintG = 0;
+                    u8 tintB = 0;
+
+                    switch (gCurrActNum)
+                    {
+                        case 1:
+                            tintB = 255;
+                            break;
+                    }
+
+                    create_dl_translation_matrix(MENU_MTX_PUSH, 0, 240.0f, 0);
+                    create_dl_scale_matrix(MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
+                    gDPSetEnvColor(gDisplayListHead++, tintR, tintG, tintB, 128);
+                    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
+                    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+                }
+            }
+
             if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
                 render_hud_mario_lives();
             }

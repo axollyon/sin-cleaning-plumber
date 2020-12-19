@@ -1,6 +1,6 @@
 COURSE_ACTS(COURSE_BOB, _(" 1 LAND OF THE UNCLEAN"),
-       _("BLUE")                          , _("GREEN")                         , _("VIOLET"),
-       _("YELLOW")                        , _("RED")                           , _("---"))
+       _("BLUE TEST")                          , _("GREEN TEST")                         , _("VIOLET TEST"),
+       _("YELLOW TEST")                        , _("RED TEST")                           , _("----- TEST"))
 
 COURSE_ACTS(COURSE_WF, _(" 2 WHOMP'S FORTRESS"),
        _("CHIP OFF WHOMP'S BLOCK")        , _("TO THE TOP OF THE FORTRESS")    , _("SHOOT INTO THE WILD BLUE"),

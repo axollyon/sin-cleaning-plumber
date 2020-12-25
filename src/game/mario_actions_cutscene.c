@@ -1163,6 +1163,12 @@ s32 act_exit_land_save_dialog(struct MarioState *m) {
 }
 
 s32 act_death_exit(struct MarioState *m) {
+    if (m->actionTimer < 18 && m->healCounter != 31) {
+        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_NONE];
+    }
+    else {
+        m->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
+    }
     if (15 < m->actionTimer++
         && launch_mario_until_land(m, ACT_DEATH_EXIT_LAND, MARIO_ANIM_GENERAL_FALL, -32.0f)) {
 #ifdef VERSION_JP
@@ -1173,7 +1179,6 @@ s32 act_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        m->numLives--;
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1189,7 +1194,6 @@ s32 act_unused_death_exit(struct MarioState *m) {
 #else
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
 #endif
-        m->numLives--;
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1208,7 +1212,6 @@ s32 act_falling_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        m->numLives--;
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1255,7 +1258,6 @@ s32 act_special_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        m->numLives--;
         m->healCounter = 31;
     }
     // show Mario

@@ -266,6 +266,7 @@ extern const Gfx tiny_bubble_dl_0B006AB0[];
 extern const Gfx tiny_bubble_dl_0B006CD8[];
 extern const Gfx tiny_bubble_dl_0B006D38[];
 extern const Gfx tiny_bubble_dl_0B006D68[];
+extern const Gfx tall_grass_dl[];
 
 // title_screen_bg
 extern const Gfx title_screen_bg_dl_0A000100[];

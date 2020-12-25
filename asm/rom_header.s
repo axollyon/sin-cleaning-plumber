@@ -15,9 +15,9 @@
 .word  0x00000000               /* Unknown */
 .word  0x00000000               /* Unknown */
 .if VERSION_SH == 1
-.ascii "SUPERMARIO64        "   /* Internal ROM name */
+.ascii "SIN CLEANING PLUMBER"   /* Internal ROM name */
 .else
-.ascii "SUPER MARIO 64      "   /* Internal ROM name */
+.ascii "SIN CLEANING PLUMBER"   /* Internal ROM name */
 .endif
 .word  0x00000000               /* Unknown */
 .word  0x0000004E               /* Cartridge */

@@ -269,21 +269,12 @@ void render_hud_power_meter(void) {
 #endif
 
 /**
- * Renders the amount of lives Mario has.
- */
-void render_hud_mario_lives(void) {
-    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, ","); // 'Mario Head' glyph
-    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(38), HUD_TOP_Y, "*"); // 'X' glyph
-    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), HUD_TOP_Y, "%d", gHudDisplay.lives);
-}
-
-/**
  * Renders the amount of coins collected.
  */
 void render_hud_coins(void) {
-    print_text(168, HUD_TOP_Y, "+"); // 'Coin' glyph
-    print_text(184, HUD_TOP_Y, "*"); // 'X' glyph
-    print_text_fmt_int(198, HUD_TOP_Y, "%d", gHudDisplay.coins);
+    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, "+"); // 'Coin' glyph
+    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(38), HUD_TOP_Y, "*"); // 'X' glyph
+    print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), HUD_TOP_Y, "%d", gHudDisplay.coins);
 }
 
 #ifdef VERSION_JP
@@ -619,6 +610,17 @@ void render_hud(void) {
                         case 1:
                             tintB = 255;
                             break;
+                        case 2:
+                            tintG = 255;
+                            break;
+                        case 3:
+                            tintR = 128;
+                            tintB = 255;
+                            break;
+                        case 4:
+                            tintR = 255;
+                            tintG = 255;
+                            break;
                     }
 
                     create_dl_translation_matrix(MENU_MTX_PUSH, 0, 240.0f, 0);
@@ -627,10 +629,6 @@ void render_hud(void) {
                     gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
                     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
                 }
-            }
-
-            if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
-                render_hud_mario_lives();
             }
 
             if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {

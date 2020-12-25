@@ -35,6 +35,12 @@ Vtx_t gBubbleTempVtx[3] = {
     { { 0, 0, 0 }, 0, { -498, 964 }, { 0xFF, 0xFF, 0xFF, 0xFF } },
 };
 
+Vtx_t gTallGrassVtx[3] = {
+    { { 0, 0, 0 }, 0, {6127, 2032}, { 0xFF, 0xFF, 0xFF, 0xFF } },
+    { { 0, 0, 0 }, 0, {2032, -2064}, { 0xFF, 0xFF, 0xFF, 0xFF } },
+    { { 0, 0, 0 }, 0, {-2063, 2032}, { 0xFF, 0xFF, 0xFF, 0xFF } },
+};
+
 /**
  * Check whether the particle with the given index is
  * laterally within distance of point (x, z). Used to
@@ -51,20 +57,45 @@ s32 particle_is_laterally_close(s32 index, s32 x, s32 z, s32 distance) {
     return 1;
 }
 
-/**
- * Generate a uniform random number in range [-2000, -1000[ or [1000, 2000[
- * Used to position flower particles
- */
-s32 random_flower_offset(void) {
-    s32 result = random_float() * 2000.0f - 1000.0f;
-    if (result < 0) {
-        result -= 1000;
-    } else {
-        result += 1000;
+void spiral(s32 n, Vec3f offset) {
+    f32 kf = (sqrtf((f32)n) - 1) / 2;
+    s32 k = (s32)kf;
+    s32 t;
+    s32 m;
+
+    if ((f32)k != kf) {
+        k += 1;
     }
 
-    return result;
+    t = 2 * k + 1;
+    m = t * t;
+    t = t - 1;
+
+    if (n >= m - t) {
+        offset[0] = k - (m - n);
+        offset[2] = -k;
+    }
+    else {
+        m = m - t;
+        if (n >= m - t) {
+            offset[0] = -k;
+            offset[2] = -k + (m - n);
+        }
+        else {
+            m = m - t;
+            if (n >= m - t) {
+                offset[0] = -k + (m - n);
+                offset[2] = k;
+            }
+            else {
+                offset[0] = k;
+                offset[2] = k - (m - n - t);
+            }
+        }
+    }
 }
+
+#define FLOWER_GAP 192
 
 /**
  * Update flower particles. Flowers are scattered randomly in front of the
@@ -72,27 +103,42 @@ s32 random_flower_offset(void) {
  */
 void envfx_update_flower(Vec3s centerPos) {
     s32 i;
+    s32 skip = 0;
     struct FloorGeometry *floorGeo; // unused
     s32 timer = gGlobalTimer;
 
-    s16 centerX = centerPos[0];
+    s16 centerX = (centerPos[0] / FLOWER_GAP) * FLOWER_GAP;
     UNUSED s16 centerY = centerPos[1];
-    s16 centerZ = centerPos[2];
+    s16 centerZ = (centerPos[2] / FLOWER_GAP) * FLOWER_GAP;
 
-    for (i = 0; i < sBubbleParticleMaxCount; i++) {
-        (gEnvFxBuffer + i)->isAlive = particle_is_laterally_close(i, centerX, centerZ, 3000);
-        if ((gEnvFxBuffer + i)->isAlive == 0) {
-            (gEnvFxBuffer + i)->xPos = random_flower_offset() + centerX;
-            (gEnvFxBuffer + i)->zPos = random_flower_offset() + centerZ;
-            (gEnvFxBuffer + i)->yPos = find_floor_height_and_data((gEnvFxBuffer + i)->xPos, 10000.0f,
-                                                                  (gEnvFxBuffer + i)->zPos, &floorGeo);
+    for (i = 0; i < sBubbleParticleMaxCount;) {
+        Vec3f offset;
+        s32 x;
+        s32 z;
+        s32 y;
+
+        spiral(i + 1 + skip, offset);
+        x = centerX + (s32)offset[0] * FLOWER_GAP;
+        z = centerZ + (s32)offset[2] * FLOWER_GAP;
+
+        if (
+            (x > -300 && x < 300 && z > -17436 && z < 17136) ||
+            sqr(x) + sqr(z - 17136) < sqr(2500) ||
+            x > 31248 ||
+            x < -31248 ||
+            z > 31248 ||
+            z < -31248
+        ) {
+            skip++;
+        }
+        else {
+            y = find_floor_height_and_data((gEnvFxBuffer + i)->xPos, 10000.0f, (gEnvFxBuffer + i)->zPos, &floorGeo);
+            
             (gEnvFxBuffer + i)->isAlive = 1;
-            (gEnvFxBuffer + i)->animFrame = random_float() * 5.0f;
-        } else if ((timer & 0x03) == 0) {
-            (gEnvFxBuffer + i)->animFrame += 1;
-            if ((gEnvFxBuffer + i)->animFrame > 5) {
-                (gEnvFxBuffer + i)->animFrame = 0;
-            }
+            (gEnvFxBuffer + i)->xPos = x;
+            (gEnvFxBuffer + i)->zPos = z;
+            (gEnvFxBuffer + i)->yPos = y;
+            i++;
         }
     }
 }
@@ -239,7 +285,6 @@ void envfx_update_whirlpool(void) {
             (gEnvFxBuffer + i)->bubbleY =
                 gEnvFxBubbleConfig[ENVFX_STATE_SRC_Y] + (random_float() * 100.0f - 50.0f);
             (gEnvFxBuffer + i)->yPos = (i + gEnvFxBuffer)->bubbleY;
-            (gEnvFxBuffer + i)->unusedBubbleVar = 0;
             (gEnvFxBuffer + i)->isAlive = 1;
 
             envfx_rotate_around_whirlpool(&(gEnvFxBuffer + i)->xPos, &(gEnvFxBuffer + i)->yPos,
@@ -321,8 +366,8 @@ s32 envfx_init_bubble(s32 mode) {
             return 0;
 
         case ENVFX_FLOWERS:
-            sBubbleParticleCount = 30;
-            sBubbleParticleMaxCount = 30;
+            sBubbleParticleCount = 2401;
+            sBubbleParticleMaxCount = 2401;
             break;
 
         case ENVFX_LAVA_BUBBLES:
@@ -368,9 +413,9 @@ void envfx_bubbles_update_switch(s32 mode, Vec3s camTo, Vec3s vertex1, Vec3s ver
     switch (mode) {
         case ENVFX_FLOWERS:
             envfx_update_flower(camTo);
-            vertex1[0] = 50;  vertex1[1] = 0;  vertex1[2] = 0;
-            vertex2[0] = 0;   vertex2[1] = 75; vertex2[2] = 0;
-            vertex3[0] = -50; vertex3[1] = 0;  vertex3[2] = 0;
+            vertex1[0] = 256;  vertex1[1] = 0;  vertex1[2] = 0;
+            vertex2[0] = 0;   vertex2[1] = 213; vertex2[2] = 0;
+            vertex3[0] = -256; vertex3[1] = 0;  vertex3[2] = 0;
             break;
 
         case ENVFX_LAVA_BUBBLES:
@@ -457,8 +502,14 @@ void envfx_set_bubble_texture(s32 mode, s16 index) {
             break;
     }
 
-    gDPSetTextureImage(sGfxCursor++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, *(imageArr + frame));
-    gSPDisplayList(sGfxCursor++, &tiny_bubble_dl_0B006D68);
+    if (mode != ENVFX_FLOWERS) {
+        gDPSetTextureImage(sGfxCursor++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, *(imageArr + frame));
+        gSPDisplayList(sGfxCursor++, &tiny_bubble_dl_0B006D68);
+    }
+    else {
+        gDPSetTextureImage(sGfxCursor++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, *(imageArr + frame));
+        gSPDisplayList(sGfxCursor++, &tall_grass_dl);
+    }
 }
 
 /**
@@ -492,7 +543,8 @@ Gfx *envfx_update_bubble_particles(s32 mode, UNUSED Vec3s marioPos, Vec3s camFro
     for (i = 0; i < sBubbleParticleMaxCount; i += 5) {
         gDPPipeSync(sGfxCursor++);
         envfx_set_bubble_texture(mode, i);
-        append_bubble_vertex_buffer(sGfxCursor++, i, vertex1, vertex2, vertex3, (Vtx *) gBubbleTempVtx);
+        append_bubble_vertex_buffer(sGfxCursor++, i, vertex1, vertex2, vertex3,  
+            (mode == ENVFX_FLOWERS) ? (Vtx *) gTallGrassVtx : (Vtx *) gBubbleTempVtx);
         gSP1Triangle(sGfxCursor++, 0, 1, 2, 0);
         gSP1Triangle(sGfxCursor++, 3, 4, 5, 0);
         gSP1Triangle(sGfxCursor++, 6, 7, 8, 0);

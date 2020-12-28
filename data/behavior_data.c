@@ -1076,6 +1076,7 @@ const BehaviorScript bhvDoor[] = {
     SET_HITBOX(/*Radius*/ 80, /*Height*/ 100),
     SET_INT(oIntangibleTimer, 0),
     SET_FLOAT(oCollisionDistance, 1000),
+    SET_FLOAT(oDrawingDistance, 20000),
     SET_HOME(),
     CALL_NATIVE(bhv_door_init),
     BEGIN_LOOP(),

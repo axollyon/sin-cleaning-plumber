@@ -3,7 +3,41 @@
 const GeoLayout bob_area_2_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 0, 5000, -1000, bob_dl_Tunnel_mesh),
+		GEO_SWITCH_CASE(4, geo_switch_area),
+		GEO_OPEN_NODE(),
+			GEO_BRANCH(1, bob_dl_1___Main_Room_geo),
+			GEO_BRANCH(1, bob_dl_Left_Room_1_geo),
+			GEO_BRANCH(1, bob_dl_Left_Room_3_geo),
+			GEO_BRANCH(1, bob_dl_Right_Room_2_geo),
+		GEO_CLOSE_NODE(),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout bob_dl_1___Main_Room_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 0, 0, -7000, bob_dl_Tunnel_mesh),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout bob_dl_Left_Room_1_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 400, 0, -624, bob_dl_Left_Room_1_Mesh_mesh),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout bob_dl_Left_Room_3_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 400, 0, 562, bob_dl_Left_Room_3_Mesh_mesh),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout bob_dl_Right_Room_2_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, -400, 0, -31, bob_dl_Right_Room_2_Mesh_mesh),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };

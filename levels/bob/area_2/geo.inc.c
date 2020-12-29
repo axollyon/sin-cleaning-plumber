@@ -16,7 +16,8 @@ const GeoLayout bob_area_2_geo[] = {
 const GeoLayout bob_dl_1___Main_Room_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 0, 0, -7000, bob_dl_Tunnel_mesh),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 0, 500, -920, bob_dl_Lights_mesh),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 0, 0, -7000, bob_dl_Tunnel_Render_mesh),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };

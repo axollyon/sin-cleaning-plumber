@@ -554,6 +554,9 @@ void bhv_volcano_trap_loop(void);
 
 void bhv_zeroninethree_init(void);
 void bhv_zeroninethree_loop(void);
+void bhv_questionmark_loop(void);
+void bhv_rope_loop(void);
+void bhv_unclean_figure_loop(void);
 
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 

@@ -33,3 +33,14 @@ void bhv_giant_pole_loop(void) {
     }
     bhv_pole_base_loop();
 }
+
+void bhv_rope_loop(void) {
+    u8 event = o->oBehParams >> 24;
+    if (gMarioState->curEvent >= event)
+    {
+        cur_obj_set_model(MODEL_ROPE);
+        bhv_pole_base_loop();
+    }
+    else
+        cur_obj_set_model(MODEL_NONE);
+}

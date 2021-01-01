@@ -29,3 +29,6 @@
 #include "koopa_shell/geo.inc.c"
 
 #include "zeroninethree/geo.inc.c"
+#include "questionmark/geo.inc.c"
+#include "rope/geo.inc.c"
+#include "unclean_figure/geo.inc.c"

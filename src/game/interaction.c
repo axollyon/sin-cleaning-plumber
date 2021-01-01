@@ -770,8 +770,9 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
     u32 grandStar = (o->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
+    u8 event = (o->oBehParams >> 8) & 0xFF;
 
-    if (m->health >= 0x100) {
+    if (m->health >= 0x100 && m->curEvent >= event) {
         mario_stop_riding_and_holding(m);
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
@@ -1000,7 +1001,11 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
     s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
-        if (numStars >= requiredNumStars) {
+        if 
+        (
+            numStars >= requiredNumStars ||
+            (requiredNumStars == 0xFD && m->curEvent > 2)
+        ) {
             u32 actionArg = should_push_or_pull_door(m, o);
             u32 enterDoorAction;
             u32 doorSaveFileFlag;
@@ -1048,6 +1053,23 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
                     break;
                 case 0xFE:
                     text = DIALOG_023;
+                    break;
+                case 0xFD:
+                    if (m->curEvent == 2)
+                    {
+                        text = DIALOG_001;
+                        m->curEvent++;
+                    }
+                    break;
+                case 0xFC:
+                    if (m->curEvent >= 5)
+                    {
+                        text = DIALOG_006;
+                        if (m->curEvent == 5)
+                            m->curEvent++;
+                    }
+                    else
+                        text = DIALOG_002;
                     break;
             }
 
@@ -1509,7 +1531,8 @@ u32 check_object_grab_mario(struct MarioState *m, UNUSED u32 interactType, struc
 
 u32 interact_pole(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     s32 actionId = m->action & ACT_ID_MASK;
-    if (actionId >= 0x080 && actionId < 0x0A0) {
+    u8 event = o->oBehParams >> 24;
+    if (actionId >= 0x080 && actionId < 0x0A0 && m->curEvent >= event) {
         if (!(m->prevAction & ACT_FLAG_ON_POLE) || m->usedObj != o) {
 #ifdef VERSION_SH
             f32 velConv = m->forwardVel; // conserve the velocity.
@@ -1700,7 +1723,14 @@ u32 mario_can_talk(struct MarioState *m, u32 arg) {
 #endif
 
 u32 check_read_sign(struct MarioState *m, struct Object *o) {
-    if ((m->input & READ_MASK) && mario_can_talk(m, 0) && object_facing_mario(m, o, SIGN_RANGE)) {
+    u8 event = o->oBehParams >> 24;
+    if 
+    (
+        (m->input & READ_MASK) && 
+        mario_can_talk(m, 0) && 
+        object_facing_mario(m, o, SIGN_RANGE) &&
+        (event == 0 || (m->curEvent >= event))
+    ) {
         s16 facingDYaw = (s16)(o->oMoveAngleYaw + 0x8000) - m->faceAngle[1];
         if (facingDYaw >= -SIGN_RANGE && facingDYaw <= SIGN_RANGE) {
             f32 targetX = o->oPosX + 105.0f * sins(o->oMoveAngleYaw);
@@ -1712,6 +1742,10 @@ u32 check_read_sign(struct MarioState *m, struct Object *o) {
 
             m->interactObj = o;
             m->usedObj = o;
+
+            if (event > 0 && m->curEvent == event)
+                m->curEvent++;
+
             return set_mario_action(m, ACT_READING_SIGN, 0);
         }
     }

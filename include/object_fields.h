@@ -1157,4 +1157,8 @@
 #define /*0x0FC*/ oYoshiChosenHome OBJECT_FIELD_S32(0x1D)
 #define /*0x100*/ oYoshiTargetYaw  OBJECT_FIELD_S32(0x1E)
 
+#define /*0x0F4*/ oQMarkInteractable OBJECT_FIELD_U32(0x1B)
+
+#define /*0x0F4*/ oStarCollected OBJECT_FIELD_U32(0x1B)
+
 #endif // OBJECT_FIELDS_H

@@ -230,19 +230,19 @@ static void stub_is_textbox_active(u16 *a0) {
  * numStars has reached a milestone and prevNumStarsForDialog has not reached it.
  */
 s32 get_star_collection_dialog(struct MarioState *m) {
-    // s32 i;
+    s32 i;
     s32 dialogID = 0;
-    // s32 numStarsRequired;
+    s32 numStarsRequired;
 
-    // for (i = 0; i < ARRAY_COUNT(sStarsNeededForDialog); i++) {
-    //     numStarsRequired = sStarsNeededForDialog[i];
-    //     if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
-    //         dialogID = i + DIALOG_141;
-    //         break;
-    //     }
-    // }
+    for (i = 0; i < ARRAY_COUNT(sStarsNeededForDialog); i++) {
+        numStarsRequired = sStarsNeededForDialog[i];
+        if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
+            dialogID = i + DIALOG_141;
+            break;
+        }
+    }
 
-    // m->prevNumStarsForDialog = m->numStars;
+    m->prevNumStarsForDialog = m->numStars;
     return dialogID;
 }
 
@@ -507,21 +507,34 @@ s32 act_reading_sign(struct MarioState *m) {
             // intentional fall through
         // turn toward sign
         case 1:
+        case 3:
             m->faceAngle[1] += marioObj->oMarioPoleUnk108 / 11;
             m->pos[0] += marioObj->oMarioReadingSignDPosX / 11.0f;
             m->pos[2] += marioObj->oMarioReadingSignDPosZ / 11.0f;
             // create the text box
             if (m->actionTimer++ == 10) {
-                create_dialog_inverted_box(m->usedObj->oBehParams2ndByte);
-                m->actionState = 2;
+                create_dialog_inverted_box(m->actionState == 1 ? m->usedObj->oBehParams2ndByte : 0x05);
+                m->actionState = m->actionState == 1 ? 2 : 4;
             }
             break;
         // in dialog
         case 2:
+        case 4:
             // dialog finished
             if (gCamera->cutscene == 0) {
-                disable_time_stop();
-                set_mario_action(m, ACT_IDLE, 0);
+                if (m->usedObj->oBehParams2ndByte != 0x04 || m->actionState == 4)
+                {
+                    disable_time_stop();
+                    set_mario_action(m, ACT_IDLE, 0);
+                }
+                else {
+                    cur_obj_play_sound_2(SOUND_GENERAL2_PYRAMID_TOP_EXPLOSION);
+                    trigger_cutscene_dialog(1);
+                    enable_time_stop();
+                    set_mario_animation(m, MARIO_ANIM_FIRST_PERSON);
+                    m->actionTimer = 0;
+                    m->actionState = 3;
+                }
             }
             break;
     }

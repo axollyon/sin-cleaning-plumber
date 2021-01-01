@@ -1889,4 +1889,6 @@ void init_mario_from_save_file(void) {
 
     gHudDisplay.coins = 0;
     gHudDisplay.wedges = 8;
+
+    gMarioState->curEvent = 1;
 }

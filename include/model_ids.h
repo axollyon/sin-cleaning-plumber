@@ -566,6 +566,9 @@
 
 // Custom models start here
 #define MODEL_ZERONINETHREE               0xE2        // zeroninethree_geo
+#define MODEL_QUESTIONMARK                0xE3        // questionmark_geo
+#define MODEL_ROPE                        0xE4        // rope_geo
+#define MODEL_UNCLEAN_FIGURE              0xE5        // unclean_figure_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

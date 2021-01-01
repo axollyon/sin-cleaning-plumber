@@ -16,119 +16,67 @@
 #define GIVE_UP "give"
 #endif
 
-DEFINE_DIALOG(DIALOG_000, 1, 6, 30, 200, _("\
-Wow! You're smack in the\n\
-middle of the battlefield.\n\
-You'll find the Power\n\
-Stars that Bowser stole\n\
-inside the painting\n\
-worlds.\n\
-First, talk to the\n\
-Bob-omb Buddy. (Press [B]\n\
-to talk.) He'll certainly\n\
-help you out, and so will\n\
-his " COMRADES " in other\n\
-areas.\n\
-To read signs, stop, face\n\
-them and press [B]. Press [A]\n\
-or [B] to scroll ahead. You\n\
-can talk to some other\n\
-characters by facing them\n\
-and pressing [B]."))
+DEFINE_DIALOG(DIALOG_000, 1, 5, 30, 200, _("\
+There's nothing in here,\n\
+but it absolutely stinks.\n\
+The walls are disgusting -\n\
+they're covered in some\n\
+sort of brown goo.\n\
+Something seemed off with\n\
+that first door on the\n\
+left. It shouldn't hurt to\n\
+check it out again.\n\
+...Hopefully."))
 
-DEFINE_DIALOG(DIALOG_001, 1, 4, 95, 200, _("\
-Watch out! If you wander\n\
-around here, you're liable\n\
-to be " PLASTERED " by a\n\
-water bomb!\n\
-Those enemy Bob-ombs love\n\
-to fight, and they're\n\
-always finding ways to\n\
-attack.\n\
-This meadow has become\n\
-a battlefield ever since\n\
-the Big Bob-omb got his\n\
-paws on the Power Star.\n\
-Can you recover the Star\n\
-for us? Cross the bridge\n\
-and go left up the path\n\
-to find the Big Bob-omb.\n\
-Please come back to see\n\
-me after you've retrieved\n\
-the Power Star!"))
+DEFINE_DIALOG(DIALOG_001, 1, 5, 95, 200, _("\
+Part of a key is stuck in\n\
+the lock here. Its back is\n\
+broken off, but you\n\
+manage to manipulate it\n\
+and unlock the door."))
 
-DEFINE_DIALOG(DIALOG_002, 1, 4, 95, 200, _("\
-Hey, you! It's dangerous\n\
-ahead, so listen up! Take\n\
-my advice.\n\
+DEFINE_DIALOG(DIALOG_002, 1, 3, 95, 200, _("\
+Something on the other\n\
+side is blocking this door\n\
+from opening."))
+
+DEFINE_DIALOG(DIALOG_003, 1, 4, 30, 200, _("\
+There seems to be some\n\
+clipped newspaper articles\n\
+here, but it's too hard\n\
+to read what they say.\n\
+They look like they would\n\
+fall apart at the touch,\n\
+so it might be better to\n\
+just leave them alone."))
+
+DEFINE_DIALOG(DIALOG_004, 1, 4, 30, 200, _("\
+There's a book on the\n\
+floor here. It doesn't\n\
+have a title, or any\n\
+identifying mar--"))
+
+DEFINE_DIALOG(DIALOG_005, 1, 4, 30, 200, _("\
+What was that?!\n\
+It sounded like it came\n\
+from a room on the other\n\
+side of the hall..."))
+
+DEFINE_DIALOG(DIALOG_006, 1, 5, 95, 200, _("\
+The door is still\n\
+blocked. You bash on it\n\
+in an attempt to push\n\
+through, and you can\n\
+just barely see inside.\n\
+There's more newspaper\n\
+clippings on the wall,\n\
+a box of what seems to\n\
+be cereal...\n\
 \n\
-Cross the two\n\
-bridges ahead, then\n\
-watch for falling\n\
-water bombs.\n\
-The Big Bob-omb at the\n\
-top of the mountain is\n\
-very powerful--don't let\n\
-him grab you!\n\
-We're Bob-omb Buddies,\n\
-and we're on your side.\n\
-You can talk to us\n\
-whenever you'd like to!"))
-
-DEFINE_DIALOG(DIALOG_003, 1, 5, 95, 200, _("\
-Thank you, Mario! The Big\n\
-Bob-omb is nothing but a\n\
-big dud now! But the\n\
-battle for the castle has\n\
-just begun.\n\
-Other enemies are holding\n\
-the other Power Stars. If\n\
-you recover more Stars,\n\
-you can open new doors\n\
-that lead to new worlds!\n\
-My Bob-omb Buddies are\n\
-waiting for you. Be sure\n\
-to talk to them--they'll\n\
-set up cannons for you."))
-
-DEFINE_DIALOG(DIALOG_004, 1, 3, 95, 200, _("\
-We're peace-loving\n\
-Bob-ombs, so we don't use\n\
-cannons.\n\
-But if you'd like\n\
-to blast off, we don't\n\
-mind. Help yourself.\n\
-We'll prepare all of the\n\
-cannons in this course for\n\
-you to use. Bon Voyage!"))
-
-DEFINE_DIALOG(DIALOG_005, 1, 3, 30, 200, _("\
-Hey, Mario! Is it true\n\
-that you beat the Big\n\
-Bob-omb? Cool!\n\
-You must be strong. And\n\
-pretty fast. So, how fast\n\
-are you, anyway?\n\
-Fast enough to beat me...\n\
-Koopa the Quick? I don't\n\
-think so. Just try me.\n\
-How about a race to the\n\
-mountaintop, where the\n\
-Big Bob-omb was?\n\
-Whaddya say? When I say\n\
-『Go,』 let the race begin!\n\
-\n\
-Ready....\n\
-\n\
-//Go!////Don't Go"))
-
-DEFINE_DIALOG(DIALOG_006, 1, 3, 30, 200, _("\
-Hey!!! Don't try to " SCAM_ME
-"You've gotta run\n\
-the whole course.\n\
-Later. Look me up when\n\
-you want to race for\n\
-real."))
+...There's a hand laying\n\
+on the floor here, palm\n\
+facing upwards. You need\n\
+to get out of here."))
 
 DEFINE_DIALOG(DIALOG_007, 1, 5, 30, 200, _("\
 Hufff...fff...pufff...\n\
@@ -293,9 +241,10 @@ DEFINE_DIALOG(DIALOG_022, 1, 2, 95, 200, _("\
 This door seems to be\n\
 locked."))
 
-DEFINE_DIALOG(DIALOG_023, 1, 2, 95, 200, _("\
-There's no handle\n\
-attached to this door..."))
+DEFINE_DIALOG(DIALOG_023, 1, 3, 95, 200, _("\
+The handle on this door\n\
+is covered in some vile-\n\
+smelling substance."))
 
 DEFINE_DIALOG(DIALOG_024, 1, 5, 95, 200, _("\
 You need Star power to\n\
@@ -1708,22 +1657,10 @@ Left: Black Hole\n\
 ///Elevator 1\n\
 Arrow: You are here"))
 
-DEFINE_DIALOG(DIALOG_141, 1, 5, 150, 200, _("\
-You've recovered one of\n\
-the stolen Power Stars!\n\
-Now you can open some of\n\
-the sealed doors in the\n\
-castle.\n\
-Try the Princess's room\n\
-on the second floor and\n\
-the room with the\n\
-painting of Whomp's\n\
-Fortress on Floor 1.\n\
-Bowser's troops are still\n\
-gaining power, so you\n\
-can't give up. Save us,\n\
-Mario! Keep searching for\n\
-Stars!"))
+DEFINE_DIALOG(DIALOG_141, 1, 3, 150, 200, _("\
+End of the demo.\n\
+Created by Axollyon\n\
+Music by 2 Mello"))
 
 DEFINE_DIALOG(DIALOG_142, 1, 5, 150, 200, _("\
 You've recovered three\n\

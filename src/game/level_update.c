@@ -1286,6 +1286,8 @@ s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) {
         gCurrCourseStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
     }
 
+    gMarioState->curEvent = 1;
+
     if (gSavedCourseNum != gCurrCourseNum) {
         gSavedCourseNum = gCurrCourseNum;
         nop_change_course();

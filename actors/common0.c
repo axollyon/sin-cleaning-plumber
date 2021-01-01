@@ -81,3 +81,6 @@ UNUSED static const u64 binid_17 = 17;
 UNUSED static const u64 binid_18 = 18;
 
 #include "zeroninethree/model.inc.c"
+#include "questionmark/model.inc.c"
+#include "rope/model.inc.c"
+#include "unclean_figure/model.inc.c"

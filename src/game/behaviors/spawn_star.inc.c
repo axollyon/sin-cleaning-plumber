@@ -19,20 +19,31 @@ void bhv_collect_star_init(void) {
     starId = (o->oBehParams >> 24) & 0xFF;
     currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
     if (currentLevelStarFlags & (1 << starId)) {
-        o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_TRANSPARENT_STAR];
+        o->oStarCollected = TRUE;
     } else {
-        o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
+        o->oStarCollected = FALSE;
     }
 
     obj_set_hitbox(o, &sCollectStarHitbox);
 }
 
 void bhv_collect_star_loop(void) {
-    o->oFaceAngleYaw += 0x800;
+    u8 event = (o->oBehParams >> 8) & 0xFF;
 
-    if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-        mark_obj_for_deletion(o);
-        o->oInteractStatus = 0;
+    if (gMarioState->curEvent >= event)
+    {
+        cur_obj_set_model(o->oStarCollected ? MODEL_TRANSPARENT_STAR : MODEL_STAR);
+
+        o->oFaceAngleYaw += 0x800;
+
+        if (o->oInteractStatus & INT_STATUS_INTERACTED) {
+            mark_obj_for_deletion(o);
+            o->oInteractStatus = 0;
+        }
+    }
+    else 
+    {
+        cur_obj_set_model(MODEL_NONE);
     }
 }
 

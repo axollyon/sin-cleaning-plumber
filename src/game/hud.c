@@ -436,7 +436,7 @@ void render_intro_cutscene()
                 "Got another assignment",
                 "for you, a cross-test. ",
                 "New anomaly got shipped, ",
-                "a humanoid male. 155cm, ",
+                "a humanoid male. 160cm, ",
                 "56kg, seemingly mid-",
                 "twenties. Claims to be",
                 "\"Mario\" - yes, the",

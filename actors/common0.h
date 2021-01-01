@@ -205,4 +205,10 @@ extern const Collision unknown_seg8_collision_080262F8[];
 
 #include "zeroninethree/geo_header.h"
 
+#include "questionmark/geo_header.h"
+
+#include "rope/geo_header.h"
+
+#include "unclean_figure/geo_header.h"
+
 #endif

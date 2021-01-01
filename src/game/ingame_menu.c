@@ -1552,7 +1552,7 @@ void handle_special_dialog_text(s16 dialogID) { // dialog ID tables, in order
 
     for (i = 0; i < (s16) ARRAY_COUNT(dialogRaceSound); i++) {
         if (dialogRaceSound[i] == dialogID && gDialogLineNum == 1) {
-            play_race_fanfare();
+            // play_race_fanfare();
             return;
         }
     }
